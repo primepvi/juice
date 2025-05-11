@@ -3,6 +3,13 @@
 A tiny single-header terminal canvas library written in C.  
 Draw pixels, rectangles, and lines using ANSI escape codes.
 
+## Demo
+
+This smiley face was rendered entirely in the terminal using `juice.c's` drawing
+primitives:
+
+<p align="center"> <img src="assets/yellow-face-demo.png" alt="Yellow face rendered with juice.c" width="200"/> </p>
+
 ## Usage
 
 To use `juice`, you must define some macros before including the header.  
@@ -53,6 +60,7 @@ int main() {
 ```
 
 ### Drawing a yellow face with black eyes and red mouth
+
 ```c
 #define JUICE_IMPLEMENTATION
 #define JUICE_CANVAS_WIDTH 41
