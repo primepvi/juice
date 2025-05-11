@@ -9,8 +9,10 @@
 #define JUICE_CANVAS_HEIGHT 16
 #endif
 
+#include <math.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define JUICE_SOLID "█"
 #define JUICE_DOT "░"
@@ -34,6 +36,7 @@ typedef struct {
 } juice_pixel_t;
 
 #define JUICE_MIN(a, b) ((a) < (b) ? (a) : (b))
+#define JUICE_MAX(a, b) ((a) > (b) ? (a) : (b))
 
 #define JUICE_PX_LIT(fg, bg, style)                                            \
   (juice_pixel_t) { (fg), (bg), (style) }
@@ -61,6 +64,7 @@ juice_size_t juice_mksize(size_t width, size_t height);
 
 void juice_put(juice_vec2_t pos, juice_pixel_t px);
 void juice_put_rect(juice_vec2_t start, juice_size_t size, juice_pixel_t px);
+void juice_put_line(juice_vec2_t start, juice_vec2_t end, juice_pixel_t px);
 
 #endif
 
@@ -69,7 +73,7 @@ void juice_put_rect(juice_vec2_t start, juice_size_t size, juice_pixel_t px);
 void juice_begin_frame() {
   for (size_t y = 0; y < JUICE_CANVAS_HEIGHT; y++)
     for (size_t x = 0; x < JUICE_CANVAS_WIDTH; x++) {
-      juice_canvas[y][x] = JUICE_PX_LIT(15, 0, JUICE_SOLID);
+      juice_canvas[y][x] = JUICE_PX_LIT(15, 0, (char *)JUICE_SOLID);
     }
 }
 
@@ -108,4 +112,33 @@ void juice_put_rect(juice_vec2_t start, juice_size_t size, juice_pixel_t px) {
       juice_put(JUICE_VEC2(x, y), px);
 }
 
+void juice_put_line(juice_vec2_t start, juice_vec2_t end, juice_pixel_t px) {
+  int x0 = start.x;
+  int y0 = start.y;
+  int x1 = end.x;
+  int y1 = end.y;
+
+  int dx = abs(x1 - x0);
+  int dy = abs(y1 - y0);
+  int sx = (x0 < x1) ? 1 : -1;
+  int sy = (y0 < y1) ? 1 : -1;
+  int err = dx - dy;
+
+  while (1) {
+    juice_put(JUICE_VEC2(x0, y0), px);
+
+    if (x0 == x1 && y0 == y1)
+      break;
+
+    int e2 = 2 * err;
+    if (e2 > -dy) {
+      err -= dy;
+      x0 += sx;
+    }
+    if (e2 < dx) {
+      err += dx;
+      y0 += sy;
+    }
+  }
+}
 #endif
