@@ -75,6 +75,8 @@ juice_pixel_t juice_mkpx(int fg, int bg, char *ch) {
 juice_vec2_t juice_mkvec2(size_t x, size_t y) { return JUICE_VEC2_LIT(x, y); }
 
 void juice_put(juice_vec2_t pos, juice_pixel_t px) {
+  if (pos.x >= JUICE_CANVAS_WIDTH || pos.y >= JUICE_CANVAS_HEIGHT)
+    return;
   juice_canvas[pos.y][pos.y] = px;
 }
 
